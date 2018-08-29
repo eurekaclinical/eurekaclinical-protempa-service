@@ -1,10 +1,12 @@
-package edu.emory.cci.aiw.cvrg.eureka.etl.dest;
+package edu.emory.cci.aiw.cvrg.eureka.etl.conversion;
 
-/*-
+import org.eurekaclinical.eureka.client.comm.Phenotype;
+
+/*
  * #%L
- * Eureka Protempa ETL
+ * Eureka Services
  * %%
- * Copyright (C) 2012 - 2016 Emory University
+ * Copyright (C) 2012 - 2015 Emory University
  * %%
  * This program is dual licensed under the Apache 2 and GPLv3 licenses.
  * 
@@ -40,29 +42,51 @@ package edu.emory.cci.aiw.cvrg.eureka.etl.dest;
  * #L%
  */
 
-import org.protempa.dest.table.TableColumnSpec;
 
 /**
  *
  * @author Andrew Post
  */
-class TableColumnSpecWrapper {
+public class ConversionSupport {
 
-	private final TableColumnSpec tableColumnSpec;
-	private final String propId;
-	
-	TableColumnSpecWrapper(String propId, TableColumnSpec tableColumnSpec) {
-		assert tableColumnSpec != null : "tableColumnSpec cannot be null";
-		this.tableColumnSpec = tableColumnSpec;
-		this.propId = propId;
+	public ConversionSupport() {
 	}
-	
-	String getPropId() {
-		return this.propId;
+
+	public String toPropositionIdWrapped(String phenotypeKey) {
+		if (phenotypeKey == null) {
+			return null;
+		} else {
+			return phenotypeKey + ConversionUtil.PROP_ID_WRAPPED_SUFFIX;
+		}
 	}
-	
-	TableColumnSpec getTableColumnSpec() {
-		return this.tableColumnSpec;
+
+	public String toPropositionIdWrapped(Phenotype phenotype) {
+		return toPropositionIdWrapped(phenotype.getKey());
 	}
-	
+
+	public String toPropositionId(String phenotypeKey) {
+		if (phenotypeKey == null || !phenotypeKey.startsWith(ConversionUtil.USER_KEY_PREFIX)) {
+			return phenotypeKey;
+		} else {
+			return phenotypeKey + ConversionUtil.PRIMARY_PROP_ID_SUFFIX;
+		}
+	}
+
+	public String toPropositionId(Phenotype phenotype) {
+		return toPropositionId(phenotype.getKey());
+	}
+
+	public String toPhenotypeKey(String propId) {
+		if (propId != null && propId.startsWith(ConversionUtil.USER_KEY_PREFIX)) {
+			int lastIndexOf
+					= propId.lastIndexOf(ConversionUtil.PRIMARY_PROP_ID_SUFFIX);
+			if (lastIndexOf > -1) {
+				return propId.substring(0, lastIndexOf);
+			} else {
+				return null;
+			}
+		} else {
+			return propId;
+		}
+	}
 }

@@ -1,8 +1,8 @@
-package edu.emory.cci.aiw.cvrg.eureka.etl.authentication;
+package edu.emory.cci.aiw.cvrg.eureka.etl.conversion;
 
 /*
  * #%L
- * Eureka Common
+ * Eureka Services
  * %%
  * Copyright (C) 2012 - 2014 Emory University
  * %%
@@ -40,49 +40,44 @@ package edu.emory.cci.aiw.cvrg.eureka.etl.authentication;
  * #L%
  */
 
-import edu.emory.cci.aiw.cvrg.eureka.etl.entity.UserEntity;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import org.eurekaclinical.common.comm.User;
-import org.jasig.cas.client.authentication.AttributePrincipal;
+
+import org.eurekaclinical.eureka.client.comm.Phenotype;
+import org.protempa.DefaultSourceId;
+import org.protempa.SourceId;
+import org.protempa.proposition.value.NominalValue;
 
 /**
  *
  * @author Andrew Post
  */
-public abstract class AbstractUserSupport implements UserSupport {
-	
-	protected AbstractUserSupport() {
+public class AbstractConverter {
+	private final PhenotypeConversionSupport conversionSupport;
+
+	AbstractConverter() {
+		this.conversionSupport = new PhenotypeConversionSupport();
 	}
 	
-	@Override
-	public AttributePrincipal getUserPrincipal(HttpServletRequest request) {
-		return (AttributePrincipal) request.getUserPrincipal();
+	protected String asValueString(Phenotype phenotype) {
+		return this.conversionSupport.asValueString(phenotype);
 	}
 	
-	@Override
-	public Map<String, Object> getUserPrincipalAttributes(HttpServletRequest request) {
-		AttributePrincipal principal = getUserPrincipal(request);
-		return principal.getAttributes();
-	}
-		
-	@Override
-	public boolean isSameUser(HttpServletRequest servletRequest, User user) {
-		return isSameUser(servletRequest, user.getUsername());
+	protected String asValueCompString(Phenotype phenotype) {
+		return this.conversionSupport.asValueCompString(phenotype);
 	}
 	
-	@Override
-	public boolean isSameUser(HttpServletRequest servletRequest, UserEntity user) {
-		return isSameUser(servletRequest, user.getUsername());
+	protected NominalValue asValue(Phenotype phenotype) {
+		return this.conversionSupport.asValue(phenotype);
 	}
 	
-	@Override
-	public boolean isSameUser(HttpServletRequest servletRequest, String username) {
-		AttributePrincipal principal = getUserPrincipal(servletRequest);
-		if (!principal.getName().equals(username)) {
-			return false;
-		}
-		return true;
+	protected String toPropositionId(Phenotype phenotype) {
+		return this.conversionSupport.toPropositionId(phenotype);
 	}
 	
+	protected String toPropositionIdWrapped(Phenotype phenotype) {
+		return this.conversionSupport.toPropositionIdWrapped(phenotype);
+	}
+	
+	protected SourceId sourceId(Phenotype phenotype) {
+		return DefaultSourceId.getInstance("Eureka");
+	}
 }
