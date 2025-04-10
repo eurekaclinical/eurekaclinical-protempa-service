@@ -38,7 +38,7 @@
         <protempa-version>5.2-Alpha-2</protempa-version>
         <!-- maven.javadoc.skip>true</maven.javadoc.skip-->
         <cas-mock-version>2.4</cas-mock-version>
-        <poi-version>3.9</poi-version>
+        <poi-version>5.4.0</poi-version>
         <javautil-version>4.5</javautil-version>
         <tomcat.httpsPort>8443</tomcat.httpsPort>
         <datastore-version>3.3</datastore-version>
